@@ -127,7 +127,11 @@ public enum GeoPackageDataType {
 	 * @return data type
 	 */
 	public static GeoPackageDataType fromName(String name) {
-		return valueOf(name.toUpperCase(Locale.US));
+		try {
+			return valueOf(name.toUpperCase(Locale.US));
+		}catch (IllegalArgumentException exc) {
+			return TEXT;
+		}
 	}
 
 }

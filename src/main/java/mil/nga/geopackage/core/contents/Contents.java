@@ -3,13 +3,13 @@ package mil.nga.geopackage.core.contents;
 import java.io.IOException;
 import java.util.Date;
 
-import mil.nga.geopackage.BoundingBox;
 import mil.nga.geopackage.GeoPackageException;
 import mil.nga.geopackage.core.srs.SpatialReferenceSystem;
 import mil.nga.geopackage.features.columns.GeometryColumns;
 import mil.nga.geopackage.persister.DatePersister;
 import mil.nga.geopackage.tiles.matrix.TileMatrix;
 import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
+import mil.nga.sf.GeometryEnvelope;
 
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -369,8 +369,8 @@ public class Contents {
 	 * 
 	 * @return bounding box
 	 */
-	public BoundingBox getBoundingBox() {
-		BoundingBox boundingBox = new BoundingBox(getMinX(), getMaxX(),
+	public GeometryEnvelope getBoundingBox() {
+		GeometryEnvelope boundingBox = new GeometryEnvelope(getMinX(), getMaxX(),
 				getMinY(), getMaxY());
 		return boundingBox;
 	}
@@ -381,11 +381,11 @@ public class Contents {
 	 * @param boundingBox
 	 *            bounding box
 	 */
-	public void setBoundingBox(BoundingBox boundingBox) {
-		setMinX(boundingBox.getMinLongitude());
-		setMaxX(boundingBox.getMaxLongitude());
-		setMinY(boundingBox.getMinLatitude());
-		setMaxY(boundingBox.getMaxLatitude());
+	public void setBoundingBox(GeometryEnvelope boundingBox) {
+		setMinX(boundingBox.getMinX());
+		setMaxX(boundingBox.getMaxX());
+		setMinY(boundingBox.getMinY());
+		setMaxY(boundingBox.getMaxY());
 	}
 
 }

@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mil.nga.geopackage.BoundingBox;
 import mil.nga.geopackage.GeoPackageCore;
 import mil.nga.geopackage.GeoPackageException;
 import mil.nga.geopackage.attributes.AttributesColumn;
@@ -62,6 +61,7 @@ import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
 import mil.nga.geopackage.tiles.matrixset.TileMatrixSetDao;
 import mil.nga.geopackage.tiles.user.TileColumn;
 import mil.nga.geopackage.tiles.user.TileTable;
+import mil.nga.sf.GeometryEnvelope;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.dao.DaoManager;
@@ -428,7 +428,7 @@ public abstract class GeoPackageCoreImpl implements GeoPackageCore {
 	 */
 	@Override
 	public GeometryColumns createFeatureTableWithMetadata(
-			GeometryColumns geometryColumns, BoundingBox boundingBox, long srsId) {
+			GeometryColumns geometryColumns, GeometryEnvelope boundingBox, long srsId) {
 		return createFeatureTableWithMetadata(geometryColumns, null, null,
 				boundingBox, srsId);
 	}
@@ -439,7 +439,7 @@ public abstract class GeoPackageCoreImpl implements GeoPackageCore {
 	@Override
 	public GeometryColumns createFeatureTableWithMetadata(
 			GeometryColumns geometryColumns, String idColumnName,
-			BoundingBox boundingBox, long srsId) {
+			GeometryEnvelope boundingBox, long srsId) {
 		return createFeatureTableWithMetadata(geometryColumns, idColumnName,
 				null, boundingBox, srsId);
 	}
@@ -450,7 +450,7 @@ public abstract class GeoPackageCoreImpl implements GeoPackageCore {
 	@Override
 	public GeometryColumns createFeatureTableWithMetadata(
 			GeometryColumns geometryColumns,
-			List<FeatureColumn> additionalColumns, BoundingBox boundingBox,
+			List<FeatureColumn> additionalColumns, GeometryEnvelope boundingBox,
 			long srsId) {
 		return createFeatureTableWithMetadata(geometryColumns, null,
 				additionalColumns, boundingBox, srsId);
@@ -462,7 +462,7 @@ public abstract class GeoPackageCoreImpl implements GeoPackageCore {
 	@Override
 	public GeometryColumns createFeatureTableWithMetadata(
 			GeometryColumns geometryColumns, String idColumnName,
-			List<FeatureColumn> additionalColumns, BoundingBox boundingBox,
+			List<FeatureColumn> additionalColumns, GeometryEnvelope boundingBox,
 			long srsId) {
 
 		if (idColumnName == null) {
@@ -488,7 +488,7 @@ public abstract class GeoPackageCoreImpl implements GeoPackageCore {
 	 */
 	@Override
 	public GeometryColumns createFeatureTableWithMetadata(
-			GeometryColumns geometryColumns, BoundingBox boundingBox,
+			GeometryColumns geometryColumns, GeometryEnvelope boundingBox,
 			long srsId, List<FeatureColumn> columns) {
 
 		// Get the SRS
@@ -607,8 +607,8 @@ public abstract class GeoPackageCoreImpl implements GeoPackageCore {
 	 */
 	@Override
 	public TileMatrixSet createTileTableWithMetadata(String tableName,
-			BoundingBox contentsBoundingBox, long contentsSrsId,
-			BoundingBox tileMatrixSetBoundingBox, long tileMatrixSetSrsId) {
+			GeometryEnvelope contentsBoundingBox, long contentsSrsId,
+			GeometryEnvelope tileMatrixSetBoundingBox, long tileMatrixSetSrsId) {
 		return createTileTableWithMetadata(ContentsDataType.TILES, tableName,
 				contentsBoundingBox, contentsSrsId, tileMatrixSetBoundingBox,
 				tileMatrixSetSrsId);
@@ -619,8 +619,8 @@ public abstract class GeoPackageCoreImpl implements GeoPackageCore {
 	 */
 	@Override
 	public TileMatrixSet createTileTableWithMetadata(ContentsDataType dataType,
-			String tableName, BoundingBox contentsBoundingBox,
-			long contentsSrsId, BoundingBox tileMatrixSetBoundingBox,
+			String tableName, GeometryEnvelope contentsBoundingBox,
+			long contentsSrsId, GeometryEnvelope tileMatrixSetBoundingBox,
 			long tileMatrixSetSrsId) {
 
 		TileMatrixSet tileMatrixSet = null;

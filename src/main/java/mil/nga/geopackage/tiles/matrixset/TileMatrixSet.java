@@ -1,10 +1,10 @@
 package mil.nga.geopackage.tiles.matrixset;
 
-import mil.nga.geopackage.BoundingBox;
 import mil.nga.geopackage.GeoPackageException;
 import mil.nga.geopackage.core.contents.Contents;
 import mil.nga.geopackage.core.contents.ContentsDataType;
 import mil.nga.geopackage.core.srs.SpatialReferenceSystem;
+import mil.nga.sf.GeometryEnvelope;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -150,7 +150,7 @@ public class TileMatrixSet {
 		return tableName;
 	}
 
-	public SpatialReferenceSystem getSrs() {
+	public mil.nga.sf.srs.SpatialReferenceSystem getSrs() {
 		return srs;
 	}
 
@@ -200,9 +200,8 @@ public class TileMatrixSet {
 	 * 
 	 * @return bounding box
 	 */
-	public BoundingBox getBoundingBox() {
-		BoundingBox boundingBox = new BoundingBox(getMinX(), getMaxX(),
-				getMinY(), getMaxY());
+	public GeometryEnvelope getBoundingBox() {
+		GeometryEnvelope boundingBox = new GeometryEnvelope(getMinX(), getMinY(), getMaxX(), getMaxY());
 		return boundingBox;
 	}
 
@@ -211,7 +210,7 @@ public class TileMatrixSet {
 	 * 
 	 * @param boundingBox
 	 */
-	public void setBoundingBox(BoundingBox boundingBox) {
+	public void setBoundingBox(GeometryEnvelope boundingBox) {
 		setMinX(boundingBox.getMinLongitude());
 		setMaxX(boundingBox.getMaxLongitude());
 		setMinY(boundingBox.getMinLatitude());

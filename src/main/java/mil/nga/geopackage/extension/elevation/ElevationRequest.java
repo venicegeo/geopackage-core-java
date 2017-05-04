@@ -1,7 +1,7 @@
 package mil.nga.geopackage.extension.elevation;
 
-import mil.nga.geopackage.BoundingBox;
 import mil.nga.geopackage.tiles.TileBoundingBoxUtils;
+import mil.nga.sf.GeometryEnvelope;
 
 /**
  * Elevation request to retrieve elevation values for a point or bounding box
@@ -14,7 +14,7 @@ public class ElevationRequest {
 	/**
 	 * Bounding box
 	 */
-	private BoundingBox boundingBox;
+	private GeometryEnvelope boundingBox;
 
 	/**
 	 * Point flag, true when a single point request
@@ -24,7 +24,7 @@ public class ElevationRequest {
 	/**
 	 * Bounding box projected to the elevation tiles projection
 	 */
-	private BoundingBox projectedBoundingBox;
+	private GeometryEnvelope projectedBoundingBox;
 
 	/**
 	 * Constructor
@@ -32,7 +32,7 @@ public class ElevationRequest {
 	 * @param boundingBox
 	 *            bounding box
 	 */
-	public ElevationRequest(BoundingBox boundingBox) {
+	public ElevationRequest(GeometryEnvelope boundingBox) {
 		this.boundingBox = boundingBox;
 	}
 
@@ -45,7 +45,7 @@ public class ElevationRequest {
 	 *            longitude coordinate
 	 */
 	public ElevationRequest(double latitude, double longitude) {
-		this(new BoundingBox(longitude, longitude, latitude, latitude));
+		this(new GeometryEnvelope(longitude, longitude, latitude, latitude));
 		point = true;
 	}
 
@@ -54,7 +54,7 @@ public class ElevationRequest {
 	 * 
 	 * @return bounding box
 	 */
-	public BoundingBox getBoundingBox() {
+	public GeometryEnvelope getBoundingBox() {
 		return boundingBox;
 	}
 
@@ -72,7 +72,7 @@ public class ElevationRequest {
 	 * 
 	 * @return projected bounding box
 	 */
-	public BoundingBox getProjectedBoundingBox() {
+	public GeometryEnvelope getProjectedBoundingBox() {
 		return projectedBoundingBox;
 	}
 
@@ -82,7 +82,7 @@ public class ElevationRequest {
 	 * @param projectedBoundingBox
 	 *            projected bounding box
 	 */
-	public void setProjectedBoundingBox(BoundingBox projectedBoundingBox) {
+	public void setProjectedBoundingBox(GeometryEnvelope projectedBoundingBox) {
 		this.projectedBoundingBox = projectedBoundingBox;
 	}
 
@@ -94,12 +94,12 @@ public class ElevationRequest {
 	 *            projected elevation
 	 * @return overlap bounding box
 	 */
-	public BoundingBox overlap(BoundingBox projectedElevation) {
-		BoundingBox overlap = null;
+	public GeometryEnvelope overlap(GeometryEnvelope projectedElevation) {
+		GeometryEnvelope overlap = null;
 		if (point) {
 			overlap = projectedBoundingBox;
 		} else {
-			overlap = TileBoundingBoxUtils.overlap(projectedBoundingBox,
+			overlap = GeometryEnvelope.overlap(projectedBoundingBox,
 					projectedElevation);
 		}
 		return overlap;

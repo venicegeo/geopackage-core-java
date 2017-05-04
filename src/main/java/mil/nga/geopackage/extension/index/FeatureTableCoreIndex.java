@@ -3,7 +3,6 @@ package mil.nga.geopackage.extension.index;
 import java.sql.SQLException;
 import java.util.Date;
 
-import mil.nga.geopackage.BoundingBox;
 import mil.nga.geopackage.GeoPackageCore;
 import mil.nga.geopackage.GeoPackageException;
 import mil.nga.geopackage.core.contents.Contents;
@@ -16,9 +15,9 @@ import mil.nga.geopackage.geom.GeoPackageGeometryData;
 import mil.nga.geopackage.io.GeoPackageProgress;
 import mil.nga.geopackage.property.GeoPackageProperties;
 import mil.nga.geopackage.property.PropertyConstants;
-import mil.nga.wkb.geom.Geometry;
-import mil.nga.wkb.geom.GeometryEnvelope;
-import mil.nga.wkb.util.GeometryEnvelopeBuilder;
+import mil.nga.sf.Geometry;
+import mil.nga.sf.GeometryEnvelope;
+import mil.nga.sf.util.GeometryEnvelopeBuilder;
 
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -533,32 +532,6 @@ public abstract class FeatureTableCoreIndex extends BaseExtension {
 		}
 
 		return qb;
-	}
-
-	/**
-	 * Query for Geometry Index objects within the bounding box, projected
-	 * correctly
-	 * 
-	 * @param boundingBox
-	 * @return geometry indices iterator
-	 */
-	public CloseableIterator<GeometryIndex> query(BoundingBox boundingBox) {
-		GeometryEnvelope envelope = boundingBox.buildEnvelope();
-		CloseableIterator<GeometryIndex> geometryIndices = query(envelope);
-		return geometryIndices;
-	}
-
-	/**
-	 * Query for Geometry Index count within the bounding box, projected
-	 * correctly
-	 * 
-	 * @param boundingBox
-	 * @return count
-	 */
-	public long count(BoundingBox boundingBox) {
-		GeometryEnvelope envelope = boundingBox.buildEnvelope();
-		long count = count(envelope);
-		return count;
 	}
 
 	/**

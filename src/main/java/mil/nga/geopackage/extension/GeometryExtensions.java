@@ -5,7 +5,7 @@ import mil.nga.geopackage.GeoPackageCore;
 import mil.nga.geopackage.GeoPackageException;
 import mil.nga.geopackage.property.GeoPackageProperties;
 import mil.nga.geopackage.property.PropertyConstants;
-import mil.nga.wkb.geom.GeometryType;
+import mil.nga.sf.GeometryType;
 
 /**
  * Geometry Extensions utility methods and constants

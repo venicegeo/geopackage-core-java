@@ -31,6 +31,7 @@ import mil.nga.geopackage.tiles.matrix.TileMatrixDao;
 import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
 import mil.nga.geopackage.tiles.matrixset.TileMatrixSetDao;
 import mil.nga.geopackage.tiles.user.TileTable;
+import mil.nga.sf.GeometryEnvelope;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
 
@@ -295,7 +296,7 @@ public interface GeoPackageCore extends Closeable {
 	 * @return geometry columns
 	 */
 	public GeometryColumns createFeatureTableWithMetadata(
-			GeometryColumns geometryColumns, BoundingBox boundingBox, long srsId);
+			GeometryColumns geometryColumns, GeometryEnvelope boundingBox, long srsId);
 
 	/**
 	 * Create a new feature table with GeoPackage metadata. Create the Geometry
@@ -319,7 +320,7 @@ public interface GeoPackageCore extends Closeable {
 	 */
 	public GeometryColumns createFeatureTableWithMetadata(
 			GeometryColumns geometryColumns, String idColumnName,
-			BoundingBox boundingBox, long srsId);
+			GeometryEnvelope boundingBox, long srsId);
 
 	/**
 	 * Create a new feature table with GeoPackage metadata. Create the Geometry
@@ -345,7 +346,7 @@ public interface GeoPackageCore extends Closeable {
 	 */
 	public GeometryColumns createFeatureTableWithMetadata(
 			GeometryColumns geometryColumns,
-			List<FeatureColumn> additionalColumns, BoundingBox boundingBox,
+			List<FeatureColumn> additionalColumns, GeometryEnvelope boundingBox,
 			long srsId);
 
 	/**
@@ -374,7 +375,7 @@ public interface GeoPackageCore extends Closeable {
 	 */
 	public GeometryColumns createFeatureTableWithMetadata(
 			GeometryColumns geometryColumns, String idColumnName,
-			List<FeatureColumn> additionalColumns, BoundingBox boundingBox,
+			List<FeatureColumn> additionalColumns, GeometryEnvelope boundingBox,
 			long srsId);
 
 	/**
@@ -398,7 +399,7 @@ public interface GeoPackageCore extends Closeable {
 	 * @since 1.1.1
 	 */
 	public GeometryColumns createFeatureTableWithMetadata(
-			GeometryColumns geometryColumns, BoundingBox boundingBox,
+			GeometryColumns geometryColumns, GeometryEnvelope boundingBox,
 			long srsId, List<FeatureColumn> columns);
 
 	/**
@@ -453,8 +454,8 @@ public interface GeoPackageCore extends Closeable {
 	 * @return tile matrix set
 	 */
 	public TileMatrixSet createTileTableWithMetadata(String tableName,
-			BoundingBox contentsBoundingBox, long contentsSrsId,
-			BoundingBox tileMatrixSetBoundingBox, long tileMatrixSetSrsId);
+			GeometryEnvelope contentsBoundingBox, long contentsSrsId,
+			GeometryEnvelope tileMatrixSetBoundingBox, long tileMatrixSetSrsId);
 
 	/**
 	 * Create a new tile table of the specified type and the GeoPackage metadata
@@ -475,8 +476,8 @@ public interface GeoPackageCore extends Closeable {
 	 * @since 1.2.1
 	 */
 	public TileMatrixSet createTileTableWithMetadata(ContentsDataType dataType,
-			String tableName, BoundingBox contentsBoundingBox,
-			long contentsSrsId, BoundingBox tileMatrixSetBoundingBox,
+			String tableName, GeometryEnvelope contentsBoundingBox,
+			long contentsSrsId, GeometryEnvelope tileMatrixSetBoundingBox,
 			long tileMatrixSetSrsId);
 
 	/**

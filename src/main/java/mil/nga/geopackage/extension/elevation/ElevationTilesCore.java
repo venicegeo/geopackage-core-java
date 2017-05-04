@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import mil.nga.geopackage.BoundingBox;
 import mil.nga.geopackage.GeoPackageConstants;
 import mil.nga.geopackage.GeoPackageCore;
 import mil.nga.geopackage.GeoPackageException;
@@ -13,14 +12,15 @@ import mil.nga.geopackage.core.contents.ContentsDataType;
 import mil.nga.geopackage.extension.BaseExtension;
 import mil.nga.geopackage.extension.ExtensionScopeType;
 import mil.nga.geopackage.extension.Extensions;
-import mil.nga.geopackage.projection.Projection;
-import mil.nga.geopackage.projection.ProjectionFactory;
-import mil.nga.geopackage.projection.ProjectionTransform;
 import mil.nga.geopackage.property.GeoPackageProperties;
 import mil.nga.geopackage.property.PropertyConstants;
 import mil.nga.geopackage.tiles.matrix.TileMatrix;
 import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
 import mil.nga.geopackage.tiles.user.TileTable;
+import mil.nga.sf.GeometryEnvelope;
+import mil.nga.sf.projection.Projection;
+import mil.nga.sf.projection.ProjectionFactory;
+import mil.nga.sf.projection.ProjectionTransform;
 
 import org.osgeo.proj4j.ProjCoordinate;
 
@@ -98,7 +98,7 @@ public abstract class ElevationTilesCore<TImage extends ElevationImage> extends
 	/**
 	 * Elevations bounding box
 	 */
-	protected final BoundingBox elevationBoundingBox;
+	protected final GeometryEnvelope elevationBoundingBox;
 
 	/**
 	 * Flag indicating the elevation and request projections are the same
@@ -311,7 +311,7 @@ public abstract class ElevationTilesCore<TImage extends ElevationImage> extends
 	 * 
 	 * @return elevation bounding box
 	 */
-	public BoundingBox getElevationBoundingBox() {
+	public GeometryEnvelope getElevationBoundingBox() {
 		return elevationBoundingBox;
 	}
 
@@ -576,9 +576,9 @@ public abstract class ElevationTilesCore<TImage extends ElevationImage> extends
 	 */
 	protected Double[][] reprojectElevations(Double[][] elevations,
 			int requestedElevationsWidth, int requestedElevationsHeight,
-			BoundingBox requestBoundingBox,
+			GeometryEnvelope requestBoundingBox,
 			ProjectionTransform transformRequestToElevation,
-			BoundingBox elevationBoundingBox) {
+			GeometryEnvelope elevationBoundingBox) {
 
 		final double requestedWidthUnitsPerPixel = (requestBoundingBox
 				.getMaxLongitude() - requestBoundingBox.getMinLongitude())
@@ -1138,14 +1138,14 @@ public abstract class ElevationTilesCore<TImage extends ElevationImage> extends
 	 *            overlapping pixels
 	 * @return padded bounding box
 	 */
-	protected BoundingBox padBoundingBox(TileMatrix tileMatrix,
-			BoundingBox boundingBox, int overlap) {
+	protected GeometryEnvelope padBoundingBox(TileMatrix tileMatrix,
+			GeometryEnvelope boundingBox, int overlap) {
 		double lonPixelPadding = tileMatrix.getPixelXSize() * overlap;
 		double latPixelPadding = tileMatrix.getPixelYSize() * overlap;
-		BoundingBox paddedBoundingBox = new BoundingBox(
+		GeometryEnvelope paddedBoundingBox = new GeometryEnvelope(
 				boundingBox.getMinLongitude() - lonPixelPadding,
-				boundingBox.getMaxLongitude() + lonPixelPadding,
 				boundingBox.getMinLatitude() - latPixelPadding,
+				boundingBox.getMaxLongitude() + lonPixelPadding,
 				boundingBox.getMaxLatitude() + latPixelPadding);
 		return paddedBoundingBox;
 	}
@@ -1372,8 +1372,8 @@ public abstract class ElevationTilesCore<TImage extends ElevationImage> extends
 	 */
 	public static TileMatrixSet createTileTableWithMetadata(
 			GeoPackageCore geoPackage, String tableName,
-			BoundingBox contentsBoundingBox, long contentsSrsId,
-			BoundingBox tileMatrixSetBoundingBox, long tileMatrixSetSrsId) {
+			GeometryEnvelope contentsBoundingBox, long contentsSrsId,
+			GeometryEnvelope tileMatrixSetBoundingBox, long tileMatrixSetSrsId) {
 
 		TileMatrixSet tileMatrixSet = geoPackage.createTileTableWithMetadata(
 				ContentsDataType.ELEVATION_TILES, tableName,
@@ -1566,7 +1566,7 @@ public abstract class ElevationTilesCore<TImage extends ElevationImage> extends
 	 *            request bounding box
 	 * @return elevation results
 	 */
-	public ElevationTileResults getElevations(BoundingBox requestBoundingBox) {
+	public ElevationTileResults getElevations(GeometryEnvelope requestBoundingBox) {
 		ElevationRequest request = new ElevationRequest(requestBoundingBox);
 		ElevationTileResults elevations = getElevations(request);
 		return elevations;
@@ -1584,7 +1584,7 @@ public abstract class ElevationTilesCore<TImage extends ElevationImage> extends
 	 *            elevation request height
 	 * @return elevation results
 	 */
-	public ElevationTileResults getElevations(BoundingBox requestBoundingBox,
+	public ElevationTileResults getElevations(GeometryEnvelope requestBoundingBox,
 			Integer width, Integer height) {
 		ElevationRequest request = new ElevationRequest(requestBoundingBox);
 		ElevationTileResults elevations = getElevations(request, width, height);
@@ -1613,7 +1613,7 @@ public abstract class ElevationTilesCore<TImage extends ElevationImage> extends
 	 * @return elevation results
 	 */
 	public ElevationTileResults getElevationsUnbounded(
-			BoundingBox requestBoundingBox) {
+			GeometryEnvelope requestBoundingBox) {
 		ElevationRequest request = new ElevationRequest(requestBoundingBox);
 		return getElevationsUnbounded(request);
 	}

@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mil.nga.geopackage.BoundingBox;
 import mil.nga.geopackage.GeoPackageException;
 import mil.nga.geopackage.db.GeoPackageCoreConnection;
-import mil.nga.geopackage.projection.Projection;
-import mil.nga.geopackage.projection.ProjectionConstants;
-import mil.nga.geopackage.projection.ProjectionTransform;
 import mil.nga.geopackage.tiles.TileBoundingBoxUtils;
+import mil.nga.sf.GeometryEnvelope;
+import mil.nga.sf.projection.Projection;
+import mil.nga.sf.projection.ProjectionConstants;
+import mil.nga.sf.projection.ProjectionTransform;
 
 /**
  * Abstract User DAO for reading user tables
@@ -81,7 +81,7 @@ public abstract class UserCoreDao<TColumn extends UserColumn, TTable extends Use
 	 * @return bounding box of user table data
 	 * @since 1.1.0
 	 */
-	public abstract BoundingBox getBoundingBox();
+	public abstract GeometryEnvelope getBoundingBox();
 
 	/**
 	 * Get the database
@@ -604,10 +604,10 @@ public abstract class UserCoreDao<TColumn extends UserColumn, TTable extends Use
 			throw new GeoPackageException(
 					"No projection was set which is required to determine the zoom level");
 		}
-		BoundingBox boundingBox = getBoundingBox();
+		GeometryEnvelope boundingBox = getBoundingBox();
 		ProjectionTransform webMercatorTransform = projection
 				.getTransformation(ProjectionConstants.EPSG_WEB_MERCATOR);
-		BoundingBox webMercatorBoundingBox = webMercatorTransform
+		GeometryEnvelope webMercatorBoundingBox = webMercatorTransform
 				.transform(boundingBox);
 		int zoomLevel = TileBoundingBoxUtils
 				.getZoomLevel(webMercatorBoundingBox);

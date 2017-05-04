@@ -18,7 +18,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author osbornb
  */
 @DatabaseTable(tableName = "gpkg_spatial_ref_sys", daoClass = SpatialReferenceSystemDao.class)
-public class SpatialReferenceSystem {
+public class SpatialReferenceSystem implements mil.nga.sf.srs.SpatialReferenceSystem {
 
 	/**
 	 * Table name
@@ -124,6 +124,20 @@ public class SpatialReferenceSystem {
 	 */
 	public SpatialReferenceSystem() {
 
+	}
+	
+	/**
+	 * 
+	 * @param srs srs object
+	 */
+	public SpatialReferenceSystem(mil.nga.sf.srs.SpatialReferenceSystem srs){
+		srsId = srs.getSrsId();
+		srsName = srs.getSrsName();
+		organization = srs.getOrganization();
+		organizationCoordsysId = srs.getOrganizationCoordsysId();
+		definition = srs.getDefinition();
+		description = srs.getDescription();
+		definition_12_063 = srs.getDefinition_12_063();
 	}
 
 	public long getId() {

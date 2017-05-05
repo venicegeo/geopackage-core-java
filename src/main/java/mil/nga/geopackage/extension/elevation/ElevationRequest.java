@@ -45,7 +45,7 @@ public class ElevationRequest {
 	 *            longitude coordinate
 	 */
 	public ElevationRequest(double latitude, double longitude) {
-		this(new GeometryEnvelope(longitude, longitude, latitude, latitude));
+		this(new GeometryEnvelope(longitude, latitude, longitude, latitude));
 		point = true;
 	}
 

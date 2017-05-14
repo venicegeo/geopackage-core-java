@@ -192,9 +192,9 @@ public abstract class FeatureTableCoreIndex extends BaseExtension {
 
 			// If no envelope, build one from the geometry
 			if (envelope == null) {
-				Geometry geometry = geomData.getGeometry();
-				if (geometry != null) {
-					envelope = GeometryEnvelopeBuilder.buildEnvelope(geometry);
+				Geometry simpleGeometry = geomData.getGeometry();
+				if (simpleGeometry != null) {
+					envelope = GeometryEnvelopeBuilder.buildEnvelope(simpleGeometry);
 				}
 			}
 

@@ -315,17 +315,17 @@ public class TileBoundingBoxUtils {
 	/**
 	 * Get the tile grid for the location specified as WGS84
 	 * 
-	 * @param point
+	 * @param simplePoint
 	 *            point
 	 * @param zoom
 	 *            zoom level
 	 * @return tile grid
 	 * @since 1.1.0
 	 */
-	public static TileGrid getTileGridFromWGS84(Point point, int zoom) {
+	public static TileGrid getTileGridFromWGS84(Point simplePoint, int zoom) {
 		Projection projection = ProjectionFactory
 				.getProjection(ProjectionConstants.EPSG_WORLD_GEODETIC_SYSTEM);
-		return getTileGrid(point, zoom, projection);
+		return getTileGrid(simplePoint, zoom, projection);
 	}
 
 	/**
@@ -344,7 +344,7 @@ public class TileBoundingBoxUtils {
 			Projection projection) {
 		ProjectionTransform toWebMercator = projection
 				.getTransformation(ProjectionConstants.EPSG_WEB_MERCATOR);
-		Position webMercatorPosition = toWebMercator.transform(point.getPosition());
+		Position webMercatorPosition = toWebMercator.transform((Position)point);
 		GeometryEnvelope boundingBox = new GeometryEnvelope(webMercatorPosition.getX(),
 				webMercatorPosition.getY(),
 				webMercatorPosition.getX(),
@@ -398,8 +398,8 @@ public class TileBoundingBoxUtils {
 		double maxLatitude = Math.min(boundingBox.getMaxLatitude(),
 				ProjectionConstants.WEB_MERCATOR_MAX_LAT_RANGE);
 
-		Position lowerLeftPosition = new Position(boundingBox.getMinLongitude(), minLatitude);
-		Position upperRightPosition = new Position(boundingBox.getMaxLongitude(), maxLatitude);
+		Position lowerLeftPosition = new Point(boundingBox.getMinLongitude(), minLatitude);
+		Position upperRightPosition = new Point(boundingBox.getMaxLongitude(), maxLatitude);
 
 		ProjectionTransform toWebMercator = ProjectionFactory.getProjection(
 				ProjectionConstants.EPSG_WORLD_GEODETIC_SYSTEM)

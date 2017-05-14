@@ -61,7 +61,7 @@ public class GeoPackageGeometryData {
 	/**
 	 * Geometry
 	 */
-	private Geometry geometry;
+	private Geometry simpleGeometry;
 
 	/**
 	 * Constructor
@@ -137,7 +137,7 @@ public class GeoPackageGeometryData {
 
 		// Read the Well-Known Binary Geometry if not marked as empty
 		if (!empty) {
-			geometry = GeometryReader.readGeometry(reader);
+			simpleGeometry = GeometryReader.readGeometry(reader);
 		}
 
 	}
@@ -174,7 +174,7 @@ public class GeoPackageGeometryData {
 
 		// Write the Well-Known Binary Geometry if not marked as empty
 		if (!empty) {
-			GeometryWriter.writeGeometry(writer, geometry);
+			GeometryWriter.writeGeometry(writer, simpleGeometry);
 		}
 
 		// Get the bytes
@@ -409,7 +409,7 @@ public class GeoPackageGeometryData {
 	 * @return geometry
 	 */
 	public Geometry getGeometry() {
-		return geometry;
+		return simpleGeometry;
 	}
 
 	/**
@@ -466,13 +466,13 @@ public class GeoPackageGeometryData {
 	 * Set the geometry. Updates the empty flag and if the geometry is not null,
 	 * the extended flag
 	 * 
-	 * @param geometry
+	 * @param simpleGeometry
 	 */
-	public void setGeometry(Geometry geometry) {
-		this.geometry = geometry;
-		empty = geometry == null;
-		if (geometry != null) {
-			extended = GeometryExtensions.isExtension(geometry
+	public void setGeometry(Geometry simpleGeometry) {
+		this.simpleGeometry = simpleGeometry;
+		empty = simpleGeometry == null;
+		if (simpleGeometry != null) {
+			extended = GeometryExtensions.isExtension(simpleGeometry
 					.getGeometryType());
 		}
 	}

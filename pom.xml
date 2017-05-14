@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>mil.nga</groupId>
 			<artifactId>wkb</artifactId>
-			<version>1.2.0-SF-SNAPSHOT</version>
+			<version>1.2.1-SF-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.osgeo</groupId>

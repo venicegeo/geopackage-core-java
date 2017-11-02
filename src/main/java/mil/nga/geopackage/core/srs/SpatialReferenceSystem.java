@@ -2,7 +2,6 @@ package mil.nga.geopackage.core.srs;
 
 import mil.nga.geopackage.core.contents.Contents;
 import mil.nga.geopackage.features.columns.GeometryColumns;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
 
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
@@ -114,12 +113,6 @@ public class SpatialReferenceSystem implements mil.nga.sf.srs.SpatialReferenceSy
 	private ForeignCollection<GeometryColumns> geometryColumns;
 
 	/**
-	 * Matrix Tile Set
-	 */
-	@ForeignCollectionField(eager = false)
-	private ForeignCollection<TileMatrixSet> tileMatrixSet;
-
-	/**
 	 * Default Constructor
 	 */
 	public SpatialReferenceSystem() {
@@ -217,9 +210,4 @@ public class SpatialReferenceSystem implements mil.nga.sf.srs.SpatialReferenceSy
 	public ForeignCollection<GeometryColumns> getGeometryColumns() {
 		return geometryColumns;
 	}
-
-	public ForeignCollection<TileMatrixSet> getTileMatrixSet() {
-		return tileMatrixSet;
-	}
-
 }

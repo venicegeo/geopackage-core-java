@@ -13,8 +13,6 @@ import mil.nga.geopackage.features.columns.GeometryColumns;
 import mil.nga.geopackage.features.columns.GeometryColumnsDao;
 import mil.nga.geopackage.property.GeoPackageProperties;
 import mil.nga.geopackage.property.PropertyConstants;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSetDao;
 import mil.nga.sf.projection.ProjectionConstants;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
@@ -40,11 +38,6 @@ public class SpatialReferenceSystemDao extends
 	 * Geometry Columns DAO
 	 */
 	private GeometryColumnsDao geometryColumnsDao;
-
-	/**
-	 * Tile Matrix Set DAO
-	 */
-	private TileMatrixSetDao tileMatrixSetDao;
 
 	/**
 	 * CRS WKT Extension
@@ -639,16 +632,6 @@ public class SpatialReferenceSystemDao extends
 				}
 			}
 
-			// Delete Tile Matrix Set
-			TileMatrixSetDao tileMatrixSetDao = getTileMatrixSetDao();
-			if (tileMatrixSetDao.isTableExists()) {
-				ForeignCollection<TileMatrixSet> tileMatrixSetCollection = srs
-						.getTileMatrixSet();
-				if (!tileMatrixSetCollection.isEmpty()) {
-					tileMatrixSetDao.delete(tileMatrixSetCollection);
-				}
-			}
-
 			// Delete
 			count = delete(srs);
 		}
@@ -758,20 +741,6 @@ public class SpatialReferenceSystemDao extends
 					GeometryColumns.class);
 		}
 		return geometryColumnsDao;
-	}
-
-	/**
-	 * Get or create a Tile Matrix Set DAO
-	 * 
-	 * @return tile matrix set dao
-	 * @throws SQLException
-	 */
-	private TileMatrixSetDao getTileMatrixSetDao() throws SQLException {
-		if (tileMatrixSetDao == null) {
-			tileMatrixSetDao = DaoManager.createDao(connectionSource,
-					TileMatrixSet.class);
-		}
-		return tileMatrixSetDao;
 	}
 
 }

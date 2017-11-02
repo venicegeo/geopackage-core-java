@@ -180,6 +180,19 @@ public class Contents {
 	public Contents() {
 
 	}
+	
+	/**
+	 * Copy Constructor
+	 */
+	public Contents(Contents input){
+		setId(input.getId());
+		setDataType(input.getDataType());
+		setDescription(input.getDescription());
+		setIdentifier(input.getIdentifier());
+		setSrs(input.getSrs());
+		setLastChange(input.getLastChange());
+		setBoundingBox(input.getBoundingBox());
+	}
 
 	public String getId() {
 		return tableName;
@@ -370,8 +383,8 @@ public class Contents {
 	 * @return bounding box
 	 */
 	public GeometryEnvelope getBoundingBox() {
-		GeometryEnvelope boundingBox = new GeometryEnvelope(getMinX(), getMaxX(),
-				getMinY(), getMaxY());
+		GeometryEnvelope boundingBox = new GeometryEnvelope(getMinX(), getMinY(), getMaxX(),
+				getMaxY());
 		return boundingBox;
 	}
 

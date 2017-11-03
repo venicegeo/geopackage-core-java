@@ -8,7 +8,6 @@ import java.util.Set;
 
 import mil.nga.geopackage.GeoPackageException;
 import mil.nga.geopackage.db.GeoPackageCoreConnection;
-import mil.nga.geopackage.tiles.TileBoundingBoxUtils;
 import mil.nga.sf.GeometryEnvelope;
 import mil.nga.sf.projection.Projection;
 import mil.nga.sf.projection.ProjectionConstants;
@@ -589,29 +588,6 @@ public abstract class UserCoreDao<TColumn extends UserColumn, TTable extends Use
 	 */
 	public Integer max(String column, String where, String[] args) {
 		return db.max(getTableName(), column, where, args);
-	}
-
-	/**
-	 * Get the approximate zoom level of where the bounding box of the user data
-	 * fits into the world
-	 * 
-	 * @return zoom level
-	 * @since 1.1.0
-	 */
-	public int getZoomLevel() {
-		Projection projection = getProjection();
-		if (projection == null) {
-			throw new GeoPackageException(
-					"No projection was set which is required to determine the zoom level");
-		}
-		GeometryEnvelope boundingBox = getBoundingBox();
-		ProjectionTransform webMercatorTransform = projection
-				.getTransformation(ProjectionConstants.EPSG_WEB_MERCATOR);
-		GeometryEnvelope webMercatorBoundingBox = webMercatorTransform
-				.transform(boundingBox);
-		int zoomLevel = TileBoundingBoxUtils
-				.getZoomLevel(webMercatorBoundingBox);
-		return zoomLevel;
 	}
 
 	/**

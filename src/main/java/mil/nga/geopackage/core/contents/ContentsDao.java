@@ -9,14 +9,9 @@ import mil.nga.geopackage.GeoPackageException;
 import mil.nga.geopackage.db.GeoPackageCoreConnection;
 import mil.nga.geopackage.features.columns.GeometryColumns;
 import mil.nga.geopackage.features.columns.GeometryColumnsDao;
-import mil.nga.geopackage.tiles.matrix.TileMatrix;
-import mil.nga.geopackage.tiles.matrix.TileMatrixDao;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSetDao;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -36,16 +31,6 @@ public class ContentsDao extends BaseDaoImpl<Contents, String> {
 	 * Geometry Columns DAO
 	 */
 	private GeometryColumnsDao geometryColumnsDao;
-
-	/**
-	 * Tile Matrix Set DAO
-	 */
-	private TileMatrixSetDao tileMatrixSetDao;
-
-	/**
-	 * Tile Matrix DAO
-	 */
-	private TileMatrixDao tileMatrixDao;
 
 	/**
 	 * Constructor, required by ORMLite
@@ -172,25 +157,6 @@ public class ContentsDao extends BaseDaoImpl<Contents, String> {
 				GeometryColumns geometryColumns = contents.getGeometryColumns();
 				if (geometryColumns != null) {
 					geometryColumnsDao.delete(geometryColumns);
-				}
-			}
-
-			// Delete Tile Matrix collection
-			TileMatrixDao tileMatrixDao = getTileMatrixDao();
-			if (tileMatrixDao.isTableExists()) {
-				ForeignCollection<TileMatrix> tileMatrixCollection = contents
-						.getTileMatrix();
-				if (!tileMatrixCollection.isEmpty()) {
-					tileMatrixDao.delete(tileMatrixCollection);
-				}
-			}
-
-			// Delete Tile Matrix Set
-			TileMatrixSetDao tileMatrixSetDao = getTileMatrixSetDao();
-			if (tileMatrixSetDao.isTableExists()) {
-				TileMatrixSet tileMatrixSet = contents.getTileMatrixSet();
-				if (tileMatrixSet != null) {
-					tileMatrixSetDao.delete(tileMatrixSet);
 				}
 			}
 
@@ -400,14 +366,6 @@ public class ContentsDao extends BaseDaoImpl<Contents, String> {
 
 				break;
 
-			case TILES:
-				verifyTiles(dataType);
-				break;
-
-			case ELEVATION_TILES:
-				verifyTiles(dataType);
-				break;
-
 			case ATTRIBUTES:
 				break;
 
@@ -427,33 +385,6 @@ public class ContentsDao extends BaseDaoImpl<Contents, String> {
 	}
 
 	/**
-	 * Verify the required tile tables exist
-	 * 
-	 * @param dataType
-	 *            data type
-	 * @throws SQLException
-	 */
-	private void verifyTiles(ContentsDataType dataType) throws SQLException {
-		// Tiles require Tile Matrix Set table (Spec Requirement 37)
-		TileMatrixSetDao tileMatrixSetDao = getTileMatrixSetDao();
-		if (!tileMatrixSetDao.isTableExists()) {
-			throw new GeoPackageException("A data type of "
-					+ dataType.getName() + " requires the "
-					+ TileMatrixSet.class.getSimpleName()
-					+ " table to first be created using the GeoPackage.");
-		}
-
-		// Tiles require Tile Matrix table (Spec Requirement 41)
-		TileMatrixDao tileMatrixDao = getTileMatrixDao();
-		if (!tileMatrixDao.isTableExists()) {
-			throw new GeoPackageException("A data type of "
-					+ dataType.getName() + " requires the "
-					+ TileMatrix.class.getSimpleName()
-					+ " table to first be created using the GeoPackage.");
-		}
-	}
-
-	/**
 	 * Get or create a Geometry Columns DAO
 	 * 
 	 * @return geometry columns dao
@@ -466,33 +397,4 @@ public class ContentsDao extends BaseDaoImpl<Contents, String> {
 		}
 		return geometryColumnsDao;
 	}
-
-	/**
-	 * Get or create a Tile Matrix Set DAO
-	 * 
-	 * @return tile matrix set dao
-	 * @throws SQLException
-	 */
-	private TileMatrixSetDao getTileMatrixSetDao() throws SQLException {
-		if (tileMatrixSetDao == null) {
-			tileMatrixSetDao = DaoManager.createDao(connectionSource,
-					TileMatrixSet.class);
-		}
-		return tileMatrixSetDao;
-	}
-
-	/**
-	 * Get or create a Tile Matrix DAO
-	 * 
-	 * @return tile matrix dao
-	 * @throws SQLException
-	 */
-	private TileMatrixDao getTileMatrixDao() throws SQLException {
-		if (tileMatrixDao == null) {
-			tileMatrixDao = DaoManager.createDao(connectionSource,
-					TileMatrix.class);
-		}
-		return tileMatrixDao;
-	}
-
 }

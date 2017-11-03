@@ -7,8 +7,6 @@ import mil.nga.geopackage.GeoPackageException;
 import mil.nga.geopackage.core.srs.SpatialReferenceSystem;
 import mil.nga.geopackage.features.columns.GeometryColumns;
 import mil.nga.geopackage.persister.DatePersister;
-import mil.nga.geopackage.tiles.matrix.TileMatrix;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
 import mil.nga.sf.GeometryEnvelope;
 
 import com.j256.ormlite.dao.CloseableIterator;
@@ -163,18 +161,6 @@ public class Contents {
 	private ForeignCollection<GeometryColumns> geometryColumns;
 
 	/**
-	 * Tile Matrix Set
-	 */
-	@ForeignCollectionField(eager = false)
-	private ForeignCollection<TileMatrixSet> tileMatrixSet;
-
-	/**
-	 * Tile Matrix
-	 */
-	@ForeignCollectionField(eager = false)
-	private ForeignCollection<TileMatrix> tileMatrix;
-
-	/**
 	 * Default Constructor
 	 */
 	public Contents() {
@@ -323,45 +309,6 @@ public class Contents {
 			}
 		}
 		return result;
-	}
-
-	/**
-	 * Get the Tile Matrix Set, should only return one or no value
-	 * 
-	 * @return tile matrix set
-	 */
-	public TileMatrixSet getTileMatrixSet() {
-		TileMatrixSet result = null;
-		if (tileMatrixSet.size() > 1) {
-			// This shouldn't happen with the table name primary key on tile
-			// matrix set
-			throw new GeoPackageException(
-					"Unexpected state. More than one TileMatrixSet has a foreign key to the Contents. Count: "
-							+ tileMatrixSet.size());
-		} else if (tileMatrixSet.size() == 1) {
-			CloseableIterator<TileMatrixSet> iterator = tileMatrixSet
-					.closeableIterator();
-			try {
-				result = iterator.next();
-			} finally {
-				try {
-					iterator.close();
-				} catch (IOException e) {
-					throw new GeoPackageException(
-							"Failed to close the Tile Matrix Set iterator", e);
-				}
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Get the Tile Matrix collection
-	 * 
-	 * @return tile matrices
-	 */
-	public ForeignCollection<TileMatrix> getTileMatrix() {
-		return tileMatrix;
 	}
 
 	/**

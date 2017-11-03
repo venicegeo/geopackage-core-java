@@ -568,6 +568,15 @@ public abstract class FeatureTableCoreIndex extends BaseExtension {
 
 		QueryBuilder<GeometryIndex, GeometryIndexKey> qb = queryBuilder(envelope);
 		try {
+			qb.prepareStatementString();
+		} catch (SQLException e) {
+			throw new GeoPackageException(
+					"Failed to prepare query for Geometry Index count. GeoPackage: "
+							+ geoPackage.getName() + ", Table Name: "
+							+ tableName + ", Column Name: " + columnName, e);
+		}
+
+		try {
 			count = qb.countOf();
 		} catch (SQLException e) {
 			throw new GeoPackageException(

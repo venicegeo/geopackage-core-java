@@ -29,10 +29,6 @@ import mil.nga.geopackage.extension.ExtensionsDao;
 import mil.nga.geopackage.extension.GeoPackageExtensions;
 import mil.nga.geopackage.extension.MetadataExtension;
 import mil.nga.geopackage.extension.SchemaExtension;
-import mil.nga.geopackage.extension.elevation.GriddedCoverage;
-import mil.nga.geopackage.extension.elevation.GriddedCoverageDao;
-import mil.nga.geopackage.extension.elevation.GriddedTile;
-import mil.nga.geopackage.extension.elevation.GriddedTileDao;
 import mil.nga.geopackage.extension.index.GeometryIndex;
 import mil.nga.geopackage.extension.index.GeometryIndexDao;
 import mil.nga.geopackage.extension.index.TableIndex;
@@ -55,12 +51,6 @@ import mil.nga.geopackage.schema.columns.DataColumns;
 import mil.nga.geopackage.schema.columns.DataColumnsDao;
 import mil.nga.geopackage.schema.constraints.DataColumnConstraints;
 import mil.nga.geopackage.schema.constraints.DataColumnConstraintsDao;
-import mil.nga.geopackage.tiles.matrix.TileMatrix;
-import mil.nga.geopackage.tiles.matrix.TileMatrixDao;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSetDao;
-import mil.nga.geopackage.tiles.user.TileColumn;
-import mil.nga.geopackage.tiles.user.TileTable;
 import mil.nga.sf.GeometryEnvelope;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
@@ -535,146 +525,6 @@ public abstract class GeoPackageCoreImpl implements GeoPackageCore {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public TileMatrixSetDao getTileMatrixSetDao() {
-		return createDao(TileMatrixSet.class);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean createTileMatrixSetTable() {
-		verifyWritable();
-
-		boolean created = false;
-		TileMatrixSetDao dao = getTileMatrixSetDao();
-		try {
-			if (!dao.isTableExists()) {
-				created = tableCreator.createTileMatrixSet() > 0;
-			}
-		} catch (SQLException e) {
-			throw new GeoPackageException("Failed to check if "
-					+ TileMatrixSet.class.getSimpleName()
-					+ " table exists and create it", e);
-		}
-		return created;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public TileMatrixDao getTileMatrixDao() {
-		return createDao(TileMatrix.class);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean createTileMatrixTable() {
-		verifyWritable();
-
-		boolean created = false;
-		TileMatrixDao dao = getTileMatrixDao();
-		try {
-			if (!dao.isTableExists()) {
-				created = tableCreator.createTileMatrix() > 0;
-			}
-		} catch (SQLException e) {
-			throw new GeoPackageException("Failed to check if "
-					+ TileMatrix.class.getSimpleName()
-					+ " table exists and create it", e);
-		}
-		return created;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void createTileTable(TileTable table) {
-		verifyWritable();
-
-		tableCreator.createTable(table);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public TileMatrixSet createTileTableWithMetadata(String tableName,
-			GeometryEnvelope contentsBoundingBox, long contentsSrsId,
-			GeometryEnvelope tileMatrixSetBoundingBox, long tileMatrixSetSrsId) {
-		return createTileTableWithMetadata(ContentsDataType.TILES, tableName,
-				contentsBoundingBox, contentsSrsId, tileMatrixSetBoundingBox,
-				tileMatrixSetSrsId);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public TileMatrixSet createTileTableWithMetadata(ContentsDataType dataType,
-			String tableName, GeometryEnvelope contentsBoundingBox,
-			long contentsSrsId, GeometryEnvelope tileMatrixSetBoundingBox,
-			long tileMatrixSetSrsId) {
-
-		TileMatrixSet tileMatrixSet = null;
-
-		// Get the SRS
-		SpatialReferenceSystem contentsSrs = getSrs(contentsSrsId);
-		SpatialReferenceSystem tileMatrixSetSrs = getSrs(tileMatrixSetSrsId);
-
-		// Create the Tile Matrix Set and Tile Matrix tables
-		createTileMatrixSetTable();
-		createTileMatrixTable();
-
-		// Create the user tile table
-		List<TileColumn> columns = TileTable.createRequiredColumns();
-		TileTable table = new TileTable(tableName, columns);
-		createTileTable(table);
-
-		try {
-			// Create the contents
-			Contents contents = new Contents();
-			contents.setTableName(tableName);
-			contents.setDataType(dataType);
-			contents.setIdentifier(tableName);
-			contents.setLastChange(new Date());
-			contents.setMinX(contentsBoundingBox.getMinLongitude());
-			contents.setMinY(contentsBoundingBox.getMinLatitude());
-			contents.setMaxX(contentsBoundingBox.getMaxLongitude());
-			contents.setMaxY(contentsBoundingBox.getMaxLatitude());
-			contents.setSrs(contentsSrs);
-			getContentsDao().create(contents);
-
-			// Create new matrix tile set
-			tileMatrixSet = new TileMatrixSet();
-			tileMatrixSet.setContents(contents);
-			tileMatrixSet.setSrs(tileMatrixSetSrs);
-			tileMatrixSet.setMinX(tileMatrixSetBoundingBox.getMinLongitude());
-			tileMatrixSet.setMinY(tileMatrixSetBoundingBox.getMinLatitude());
-			tileMatrixSet.setMaxX(tileMatrixSetBoundingBox.getMaxLongitude());
-			tileMatrixSet.setMaxY(tileMatrixSetBoundingBox.getMaxLatitude());
-			getTileMatrixSetDao().create(tileMatrixSet);
-
-		} catch (RuntimeException e) {
-			deleteTableQuietly(tableName);
-			throw e;
-		} catch (SQLException e) {
-			deleteTableQuietly(tableName);
-			throw new GeoPackageException(
-					"Failed to create table and metadata: " + tableName, e);
-		}
-
-		return tileMatrixSet;
-	}
-
-	/**
 	 * Get the Spatial Reference System by id
 	 *
 	 * @param srsId
@@ -973,64 +823,6 @@ public abstract class GeoPackageCoreImpl implements GeoPackageCore {
 	@Override
 	public void dropTable(String table) {
 		tableCreator.dropTable(table);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public GriddedCoverageDao getGriddedCoverageDao() {
-		return createDao(GriddedCoverage.class);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean createGriddedCoverageTable() {
-		verifyWritable();
-
-		boolean created = false;
-		GriddedCoverageDao dao = getGriddedCoverageDao();
-		try {
-			if (!dao.isTableExists()) {
-				created = tableCreator.createGriddedCoverage() > 0;
-			}
-		} catch (SQLException e) {
-			throw new GeoPackageException("Failed to check if "
-					+ GriddedCoverage.class.getSimpleName()
-					+ " table exists and create it", e);
-		}
-		return created;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public GriddedTileDao getGriddedTileDao() {
-		return createDao(GriddedTile.class);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean createGriddedTileTable() {
-		verifyWritable();
-
-		boolean created = false;
-		GriddedTileDao dao = getGriddedTileDao();
-		try {
-			if (!dao.isTableExists()) {
-				created = tableCreator.createGriddedTile() > 0;
-			}
-		} catch (SQLException e) {
-			throw new GeoPackageException("Failed to check if "
-					+ GriddedTile.class.getSimpleName()
-					+ " table exists and create it", e);
-		}
-		return created;
 	}
 
 	/**

@@ -12,8 +12,6 @@ import mil.nga.geopackage.core.srs.SpatialReferenceSystemSfSqlDao;
 import mil.nga.geopackage.core.srs.SpatialReferenceSystemSqlMmDao;
 import mil.nga.geopackage.db.GeoPackageCoreConnection;
 import mil.nga.geopackage.extension.ExtensionsDao;
-import mil.nga.geopackage.extension.elevation.GriddedCoverageDao;
-import mil.nga.geopackage.extension.elevation.GriddedTileDao;
 import mil.nga.geopackage.extension.index.GeometryIndexDao;
 import mil.nga.geopackage.extension.index.TableIndexDao;
 import mil.nga.geopackage.extension.link.FeatureTileLinkDao;
@@ -27,10 +25,6 @@ import mil.nga.geopackage.metadata.MetadataDao;
 import mil.nga.geopackage.metadata.reference.MetadataReferenceDao;
 import mil.nga.geopackage.schema.columns.DataColumnsDao;
 import mil.nga.geopackage.schema.constraints.DataColumnConstraintsDao;
-import mil.nga.geopackage.tiles.matrix.TileMatrixDao;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSet;
-import mil.nga.geopackage.tiles.matrixset.TileMatrixSetDao;
-import mil.nga.geopackage.tiles.user.TileTable;
 import mil.nga.sf.GeometryEnvelope;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
@@ -403,84 +397,6 @@ public interface GeoPackageCore extends Closeable {
 			long srsId, List<FeatureColumn> columns);
 
 	/**
-	 * Get a Tile Matrix Set DAO
-	 * 
-	 * @return Tile Matrix Set DAO
-	 */
-	public TileMatrixSetDao getTileMatrixSetDao();
-
-	/**
-	 * Create the Tile Matrix Set table if it does not already exist
-	 * 
-	 * @return true if created
-	 */
-	public boolean createTileMatrixSetTable();
-
-	/**
-	 * Get a Tile Matrix DAO
-	 * 
-	 * @return Tile Matrix DAO
-	 */
-	public TileMatrixDao getTileMatrixDao();
-
-	/**
-	 * Create the Tile Matrix table if it does not already exist
-	 * 
-	 * @return true if created
-	 */
-	public boolean createTileMatrixTable();
-
-	/**
-	 * Create a new tile table
-	 * 
-	 * @param table
-	 *            tile table
-	 */
-	public void createTileTable(TileTable table);
-
-	/**
-	 * Create a new tile table and the GeoPackage metadata
-	 * 
-	 * @param tableName
-	 *            table name
-	 * @param contentsBoundingBox
-	 *            contents bounding box
-	 * @param contentsSrsId
-	 *            contents SRS id
-	 * @param tileMatrixSetBoundingBox
-	 *            tile matrix set bounding box
-	 * @param tileMatrixSetSrsId
-	 *            tile matrix set SRS id
-	 * @return tile matrix set
-	 */
-	public TileMatrixSet createTileTableWithMetadata(String tableName,
-			GeometryEnvelope contentsBoundingBox, long contentsSrsId,
-			GeometryEnvelope tileMatrixSetBoundingBox, long tileMatrixSetSrsId);
-
-	/**
-	 * Create a new tile table of the specified type and the GeoPackage metadata
-	 * 
-	 * @param dataType
-	 *            contents data type
-	 * @param tableName
-	 *            table name
-	 * @param contentsBoundingBox
-	 *            contents bounding box
-	 * @param contentsSrsId
-	 *            contents SRS id
-	 * @param tileMatrixSetBoundingBox
-	 *            tile matrix set bounding box
-	 * @param tileMatrixSetSrsId
-	 *            tile matrix set SRS id
-	 * @return tile matrix set
-	 * @since 1.2.1
-	 */
-	public TileMatrixSet createTileTableWithMetadata(ContentsDataType dataType,
-			String tableName, GeometryEnvelope contentsBoundingBox,
-			long contentsSrsId, GeometryEnvelope tileMatrixSetBoundingBox,
-			long tileMatrixSetSrsId);
-
-	/**
 	 * Get a Data Columns DAO
 	 * 
 	 * @return Data Columns DAO
@@ -601,38 +517,6 @@ public interface GeoPackageCore extends Closeable {
 	 * @since 1.1.5
 	 */
 	public void dropTable(String table);
-
-	/**
-	 * Get a 2D Gridded Coverage DAO
-	 * 
-	 * @return 2d gridded coverage dao
-	 * @since 1.2.1
-	 */
-	public GriddedCoverageDao getGriddedCoverageDao();
-
-	/**
-	 * Create the 2D Gridded Coverage Table if it does not exist
-	 * 
-	 * @return true if created
-	 * @since 1.2.1
-	 */
-	public boolean createGriddedCoverageTable();
-
-	/**
-	 * Get a 2D Gridded Tile DAO
-	 * 
-	 * @return 2d gridded tile dao
-	 * @since 1.2.1
-	 */
-	public GriddedTileDao getGriddedTileDao();
-
-	/**
-	 * Create the 2D Gridded Tile Table if it does not exist
-	 * 
-	 * @return true if created
-	 * @since 1.2.1
-	 */
-	public boolean createGriddedTileTable();
 
 	/**
 	 * Get a Table Index DAO

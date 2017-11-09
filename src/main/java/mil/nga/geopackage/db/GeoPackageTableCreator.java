@@ -1,5 +1,6 @@
 package mil.nga.geopackage.db;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
@@ -202,12 +203,19 @@ public class GeoPackageTableCreator {
 	 * @return executed statements
 	 */
 	private int createTable(String tableScript) {
-		InputStream scriptStream = getClass().getResourceAsStream(
-				"/"
-						+ GeoPackageProperties.getProperty(
-								PropertyConstants.SQL, "directory") + "/"
-						+ tableScript);
-		int statements = runScript(scriptStream);
+		int statements = 0;
+		try(
+			InputStream scriptStream = getClass().getResourceAsStream(
+				String.format("/%s/%s", 
+						GeoPackageProperties.getProperty(
+								PropertyConstants.SQL, "directory"), 
+						tableScript));
+		) {
+			statements = runScript(scriptStream);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return statements;
 	}
 

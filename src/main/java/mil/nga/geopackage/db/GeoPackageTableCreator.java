@@ -206,11 +206,11 @@ public class GeoPackageTableCreator {
 		int statements = 0;
 		try(
 			InputStream scriptStream = getClass().getResourceAsStream(
-					"/"
-					+ GeoPackageProperties.getProperty(
-							PropertyConstants.SQL, "directory") + "/"
-					+ tableScript);
-		){
+				String.format("/%s/%s", 
+						GeoPackageProperties.getProperty(
+								PropertyConstants.SQL, "directory"), 
+						tableScript));
+		) {
 			statements = runScript(scriptStream);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

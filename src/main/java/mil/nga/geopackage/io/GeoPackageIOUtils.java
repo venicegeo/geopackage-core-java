@@ -64,10 +64,12 @@ public class GeoPackageIOUtils {
 	 */
 	public static void copyFile(File copyFrom, File copyTo) throws IOException {
 
-		InputStream from = new FileInputStream(copyFrom);
-		OutputStream to = new FileOutputStream(copyTo);
-
-		copyStream(from, to);
+		try (
+				InputStream from = new FileInputStream(copyFrom);
+				OutputStream to = new FileOutputStream(copyTo);
+		) {
+			copyStream(from, to);
+		}
 	}
 
 	/**
@@ -93,14 +95,17 @@ public class GeoPackageIOUtils {
 	public static void copyStream(InputStream copyFrom, File copyTo,
 			GeoPackageProgress progress) throws IOException {
 
-		OutputStream to = new FileOutputStream(copyTo);
+		try (
+			OutputStream to = new FileOutputStream(copyTo);
+		) {
 
-		copyStream(copyFrom, to, progress);
-
-		// Try to delete the file if progress was cancelled
-		if (progress != null && !progress.isActive()
-				&& progress.cleanupOnCancel()) {
-			copyTo.delete();
+			copyStream(copyFrom, to, progress);
+	
+			// Try to delete the file if progress was cancelled
+			if (progress != null && !progress.isActive()
+					&& progress.cleanupOnCancel()) {
+				copyTo.delete();
+			}
 		}
 	}
 
@@ -112,9 +117,13 @@ public class GeoPackageIOUtils {
 	 */
 	public static byte[] fileBytes(File file) throws IOException {
 
-		FileInputStream fis = new FileInputStream(file);
-
-		return streamBytes(fis);
+		byte []result;
+		try (
+			FileInputStream fis = new FileInputStream(file);
+		) {
+			result = streamBytes(fis);
+		}
+		return result;
 	}
 
 	/**
@@ -125,11 +134,14 @@ public class GeoPackageIOUtils {
 	 */
 	public static byte[] streamBytes(InputStream stream) throws IOException {
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-
-		copyStream(stream, bytes);
-
-		return bytes.toByteArray();
+		byte []result;
+		try (
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		) {
+			copyStream(stream, bytes);
+			result = bytes.toByteArray();
+		}
+		return result;
 	}
 
 	/**
